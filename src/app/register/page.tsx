@@ -1,11 +1,48 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import RegisterAPI from './api/RegisterAPI'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 export default function Component() {
+  const [username, setUsername] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [rut, setRut] = useState('')
+  const notify = () => {
+    toast.success('Usuario creado correctamente', { position: 'bottom-center', type: 'success' })
+  }
+  const notifyError = () => {
+    toast.error('Error al crear el usuario', { position: 'bottom-center', type: 'error' })
+  }
+  const notifyErrorPassword = () => {
+    toast.error('Las contraseñas no coinciden', { position: 'top-center', type: 'error' })
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault()
+
+    if (password !== confirmPassword) {
+      notifyErrorPassword()
+      return
+    }
+
+    const response = await RegisterAPI(username, email, password, name, rut)
+    if (response) {
+      notify()
+    } else {
+      notifyError()
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -100 }}
@@ -33,14 +70,30 @@ export default function Component() {
                 </Link>
               </p>
             </div>
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username">Nombre de usuario</Label>
-                <Input id="username" required />
+                <Input
+                  id="username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Nombre completo</Label>
+                <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Correo electrónico</Label>
-                <Input id="email" type="email" placeholder="ejemplo@gmail.com" required />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="ejemplo@gmail.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="username">Rut</Label>
@@ -49,21 +102,35 @@ export default function Component() {
                   type="text"
                   placeholder="Ejemplo: 12345678-9"
                   required
-                  pattern="[0-9]{2}-[0-9]{7}-[0-9]{1}"
+                  value={rut}
+                  onChange={(e) => setRut(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Contraseña</Label>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Confirmar contraseña</Label>
-                <Input id="confirm-password" type="password" required />
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
               </div>
               <Button type="submit" className="w-full">
                 Registrarse
               </Button>
-            </div>
+              <ToastContainer />
+            </form>
           </div>
         </div>
       </div>

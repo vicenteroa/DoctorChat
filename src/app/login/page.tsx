@@ -1,11 +1,23 @@
 'use client'
+import { useState } from 'react'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import LoginAPI from './api/LoginAPI'
 export default function Component() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const response = await LoginAPI(email, password)
+    if (response) {
+      window.location.href = '/chat'
+    }
+  }
   return (
     <motion.div
       initial={{ opacity: 0, x: -100 }}
@@ -21,10 +33,17 @@ export default function Component() {
                 Ingresa tu correo electrónico a continuación para iniciar sesión en tu cuenta
               </p>
             </div>
-            <div className="space-y-4">
+
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="email">Correo electrónico</Label>
-                <Input id="email" type="email" placeholder="ejemplo@gmail.com" required />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="ejemplo@gmail.com"
+                  required
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center">
@@ -37,12 +56,17 @@ export default function Component() {
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <Button type="submit" className="w-full">
                 Iniciar sesión
               </Button>
-            </div>
+            </form>
             <div className="mt-4 text-center text-sm">
               ¿No tienes una cuenta?{' '}
               <Link href="/register" className="underline" prefetch={false}>
