@@ -6,14 +6,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import LoginAPI from './api/LoginAPI'
+import Login from './api/Login'
 export default function Component() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const response = await LoginAPI(email, password)
+    const response = await Login(email, password)
     if (response) {
       window.location.href = '/chat'
     }

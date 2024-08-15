@@ -1,7 +1,7 @@
 import { auth } from '@/services/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 
-async function LoginAPI(email: string, password: string) {
+async function Login(email: string, password: string) {
   try {
     const { user } = await signInWithEmailAndPassword(auth, email, password)
     return user
@@ -11,4 +11,4 @@ async function LoginAPI(email: string, password: string) {
   }
 }
 
-export default LoginAPI
+export default Login

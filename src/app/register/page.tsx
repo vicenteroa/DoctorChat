@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import RegisterAPI from './api/RegisterAPI'
-import { ToastContainer, toast } from 'react-toastify'
+import useRegister from '../hooks/useRegister'
+import { ToastContainer } from 'react-toastify'
+import notify from '@/utils/notify'
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function Component() {
@@ -17,29 +18,22 @@ export default function Component() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [rut, setRut] = useState('')
-  const notify = () => {
-    toast.success('Usuario creado correctamente', { position: 'bottom-center', type: 'success' })
-  }
-  const notifyError = () => {
-    toast.error('Error al crear el usuario', { position: 'bottom-center', type: 'error' })
-  }
-  const notifyErrorPassword = () => {
-    toast.error('Las contraseñas no coinciden', { position: 'top-center', type: 'error' })
-  }
+
+  const { registerUser, loading, error, success } = useRegister()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      notifyErrorPassword()
+      notify('Las contraseñas no coinciden', 'error')
       return
     }
 
-    const response = await RegisterAPI(username, email, password, name, rut)
-    if (response) {
-      notify()
+    const user = await registerUser('/auth/register', username, email, password, name, rut)
+    if (success) {
+      notify('Usuario creado correctamente', 'success')
     } else {
-      notifyError()
+      notify(error || 'Error al crear el usuario', 'error')
     }
   }
 
@@ -96,7 +90,7 @@ export default function Component() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="username">Rut</Label>
+                <Label htmlFor="rut">Rut</Label>
                 <Input
                   id="rut"
                   type="text"
@@ -126,8 +120,8 @@ export default function Component() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Registrarse
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Registrando...' : 'Registrarse'}
               </Button>
               <ToastContainer />
             </form>
