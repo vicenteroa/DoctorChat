@@ -29,7 +29,7 @@ export default function Component() {
       return
     }
 
-    const user = await registerUser('/auth/register', username, email, password, name, rut)
+    await registerUser('/auth/register', username, email, password, name, rut)
     if (success) {
       notify('Usuario creado correctamente', 'success')
     } else {
