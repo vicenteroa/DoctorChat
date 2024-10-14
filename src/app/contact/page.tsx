@@ -2,10 +2,12 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import Navbar from '@/components/navbar/navbar'
 
 export default function Component() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+    <Navbar />
       <div className="container grid items-center justify-center gap-8 px-4 md:px-6">
         <div className="space-y-3 text-center">
           <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contactame</h2>
@@ -17,11 +19,11 @@ export default function Component() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nombre</Label>
-              <Input id="name" placeholder="Enter your name" required />
+              <Input id="name" placeholder="Ingresa tu nombre" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="Enter your email" required />
+              <Input id="email" type="email" placeholder="Ingresa tu correo" required />
             </div>
           </div>
           <div className="space-y-2">
@@ -32,7 +34,7 @@ export default function Component() {
             <Label htmlFor="message">Mensaje</Label>
             <Textarea
               id="message"
-              placeholder="Write your message"
+              placeholder="Escribe tu mensaje aquí"
               className="min-h-[150px]"
               required
             />

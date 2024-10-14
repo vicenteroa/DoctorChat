@@ -9,11 +9,13 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion'
 import Link from 'next/link'
+import Navbar from '@/components/navbar/navbar'
 
 function About() {
   const [isAnimating, setIsAnimating] = useState(true)
   return (
     <div className="relative">
+      <Navbar />
       {isAnimating && (
         <motion.div
           className="bg-white w-full h-screen absolute z-10"

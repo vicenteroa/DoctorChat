@@ -7,6 +7,11 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import Login from './api/Login'
+import AuthLayout from '../layout'
+import notify from '@/utils/notify'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 export default function Component() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,10 +20,17 @@ export default function Component() {
     e.preventDefault()
     const response = await Login(email, password)
     if (response) {
-      window.location.href = '/chat'
+      notify('Sesión iniciada correctamente', 'success')
+      setTimeout(() => {
+        window.location.href = '/chat'
+      }, 2000)
+    } else {
+      notify('Error al iniciar sesión', 'error')
     }
   }
+
   return (
+    <AuthLayout>
     <motion.div
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
@@ -73,6 +85,8 @@ export default function Component() {
                 Regístrate
               </Link>
             </div>
+
+      <ToastContainer />
           </div>
         </div>
         <div className="hidden bg-muted lg:block">
@@ -86,5 +100,6 @@ export default function Component() {
         </div>
       </div>
     </motion.div>
+    </AuthLayout>
   )
 }

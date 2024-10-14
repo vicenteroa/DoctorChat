@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import useRegister from '../hooks/useRegister'
+import useRegister from '@/app/hooks/useRegister'
 import { ToastContainer } from 'react-toastify'
 import notify from '@/utils/notify'
 import 'react-toastify/dist/ReactToastify.css'
+import AuthLayout from '../layout'
 
 export default function Component() {
   const [username, setUsername] = useState('')
@@ -38,6 +39,7 @@ export default function Component() {
   }
 
   return (
+    <AuthLayout>
     <motion.div
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
@@ -129,5 +131,6 @@ export default function Component() {
         </div>
       </div>
     </motion.div>
+    </AuthLayout>
   )
 }

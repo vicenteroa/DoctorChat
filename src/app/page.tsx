@@ -1,4 +1,5 @@
 import React from 'react'
+import Navbar from '@/components/navbar/navbar'
 import { TextRevealByWord } from '@/components/magicui/text-reveal'
 import { GoogleGeminiEffectDemo } from '@/app/GoogleDemo'
 import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
@@ -36,6 +37,7 @@ const content = [
 export default function Home() {
   return (
     <main>
+      <Navbar />
       <GoogleGeminiEffectDemo />
       <TextRevealByWord text="La primera inteligencia artificial para la derivación precisa a especialistas médicos" />
       <StickyScroll content={content} />

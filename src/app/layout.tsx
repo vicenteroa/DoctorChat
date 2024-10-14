@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Onest } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import Navbar from '@/components/navbar/navbar'
 const onest = Onest({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -25,7 +24,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
           <main>{children}</main>
         </ThemeProvider>
       </body>
