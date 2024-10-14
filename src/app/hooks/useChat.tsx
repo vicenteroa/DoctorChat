@@ -7,7 +7,7 @@ export default function useChat(symptoms: string) {
   const fetchMessage = async () => {
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/ai/recommend-specialist`, {
-        symptoms: symptoms
+        symptoms
       })
       console.log(res.data.response)
       setMessage(res.data.response)
