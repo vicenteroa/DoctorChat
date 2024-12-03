@@ -1,4 +1,5 @@
 'use client'
+
 import { cn } from '@/lib/utils'
 import { motion, MotionValue } from 'framer-motion'
 import React from 'react'
@@ -29,7 +30,7 @@ export const GoogleGeminiEffect = ({
           {description || 'Somos tu ayuda para obtener el mejor resultado en tus citas médicas'}
         </p>
         <div className="w-full h-[890px] -top-60 md:-top-40  flex items-center justify-center bg-red-transparent absolute ">
-          <button className="font-bold bg-white shadow-lg rounded-full md:px-4 md:py-2 px-2 py-1 md:mt-24 mt-8 z-30 md:text-base text-black text-xs  w-fit mx-auto ">
+          <button onClick={()=> window.location.href ='/chat'} className="font-bold bg-white shadow-lg rounded-full md:px-4 md:py-2 px-2 py-1 md:mt-24 mt-8 z-30 md:text-base text-black text-xs  w-fit mx-auto ">
             Empieza a consultar
           </button>
         </div>

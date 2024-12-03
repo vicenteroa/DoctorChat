@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
+import ReactMarkdown from 'react-markdown'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -9,6 +11,21 @@ import { Send, LogOut, Settings, HelpCircle, AlertTriangle } from 'lucide-react'
 import { auth } from '@/services/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import useChat from '../hooks/useChat'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Calendar } from '@/components/ui/calendar'
 
 type Message = {
   role: 'user' | 'assistant'
@@ -20,6 +37,12 @@ type Profile = {
   avatar: string
 }
 
+type Doctor = {
+  id: string
+  name: string
+  specialty: string
+}
+
 export default function ChatComponent() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -27,6 +50,11 @@ export default function ChatComponent() {
   const [messageCount, setMessageCount] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [users, setUser] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedDoctor, setSelectedDoctor] = useState<string | undefined>()
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+  const doctors: Doctor[] = [{ id: '1', name: 'Dr. Juan Pérez', specialty: 'Medicina General' }]
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -50,26 +78,59 @@ export default function ChatComponent() {
   useEffect(() => {
     if (aiMessage) {
       const aiResponse: Message = { role: 'assistant', content: aiMessage }
-      setMessages(prev => [...prev, aiResponse])
+      setMessages((prev) => [...prev, aiResponse])
       setIsLoading(false)
     }
   }, [aiMessage])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim() || messageCount >= 5) return
+    if (!input.trim() || messageCount >= 2) return
 
     const userMessage: Message = { role: 'user', content: input }
-    setMessages(prev => [...prev, userMessage])
+    setMessages((prev) => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
-    setMessageCount(prev => prev + 1)
+    setMessageCount((prev) => prev + 1)
 
     await fetchMessage()
   }
 
+  const sendChatToEndpoint = async (chatMessages: Message[]) => {
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/informe/generar`, {
+        chat: chatMessages.map((msg) => ({ role: msg.role, message: msg.content }))
+      })
+    } catch (error) {
+      console.error('Error sending chat to endpoint:', error)
+    }
+  }
+
   const handleSchedule = () => {
-    console.log('Agendar cita...')
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedDoctor(undefined)
+  }
+
+  const handleConfirmSchedule = async () => {
+    if (selectedDoctor && date) {
+      try {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/citas/register`, {
+          userId: users,
+          doctorId: selectedDoctor,
+          date: date.toISOString()
+        })
+        console.log(`Cita agendada con el doctor: ${selectedDoctor}`)
+        // que me devuelva el mensaje del servidor
+        await sendChatToEndpoint(messages)
+        handleCloseModal()
+      } catch (error) {
+        console.error('Error scheduling appointment:', error)
+      }
+    }
   }
 
   useEffect(() => {
@@ -80,7 +141,8 @@ export default function ChatComponent() {
     <div className="flex flex-col h-screen bg-gray-100">
       <div className="bg-red-500 text-white p-2 text-center">
         <AlertTriangle className="inline-block mr-2" size={16} />
-        Esta es una versión beta de prueba del chat. Puede contener errores y su funcionamiento está limitado, por favor no uses esta versión para citas reales.
+        Esta es una versión beta de prueba del chat. Puede contener errores y su funcionamiento está
+        limitado, por favor no uses esta versión para citas reales.
       </div>
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-64 bg-white shadow-md flex flex-col">
@@ -107,7 +169,11 @@ export default function ChatComponent() {
             </Button>
           </nav>
           <div className="p-4 border-t">
-            <Button variant="ghost" onClick={() => signOut(auth)} className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50">
+            <Button
+              variant="ghost"
+              onClick={() => signOut(auth)}
+              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Cerrar sesión
             </Button>
@@ -123,9 +189,7 @@ export default function ChatComponent() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`flex items-end space-x-2 ${
@@ -149,7 +213,11 @@ export default function ChatComponent() {
                         : 'bg-gray-200 text-gray-900'
                     }`}
                   >
-                    {message.content}
+                    {message.role === 'user' ? (
+                      message.content
+                    ) : (
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    )}
                   </div>
                 </div>
               </div>
@@ -170,22 +238,64 @@ export default function ChatComponent() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Escribe un mensaje..."
                 className="flex-grow"
-                disabled={messageCount >= 5}
+                disabled={messageCount >= 2}
               />
-              <Button type="submit" disabled={isLoading || messageCount >= 5}>
+              <Button type="submit" disabled={isLoading || messageCount >= 2}>
                 <Send className="h-4 w-4 mr-2" />
-                Enviar {messageCount < 5 ? `(${5 - messageCount})` : ''}
+                Enviar {messageCount < 2 ? `(${2 - messageCount})` : ''}
               </Button>
-              <Button type="button" onClick={handleSchedule} variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
+              <Button
+                type="button"
+                onClick={handleSchedule}
+                variant="outline"
+                className="bg-blue-500 text-white hover:bg-blue-600"
+              >
                 Agendar
               </Button>
             </form>
             {messageCount >= 5 && (
-              <p className="text-red-500 text-sm mt-2">Has alcanzado el límite de mensajes para esta versión de prueba.</p>
+              <p className="text-red-500 text-sm mt-2">
+                Has alcanzado el límite de mensajes para esta versión de prueba.
+              </p>
             )}
           </footer>
         </main>
       </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Agendar cita</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 flex flex-col items-center w-full">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="rounded-md border"
+            />
+            <Select onValueChange={setSelectedDoctor}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona un doctor" />
+              </SelectTrigger>
+              <SelectContent>
+                {doctors.map((doctor) => (
+                  <SelectItem key={doctor.id} value={doctor.id}>
+                    {doctor.name} - {doctor.specialty}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseModal}>
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmSchedule} disabled={!selectedDoctor}>
+              Confirmar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
