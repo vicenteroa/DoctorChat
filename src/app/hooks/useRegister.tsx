@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import axios from 'axios'
 
-export default function useRegister() {
+export function useRegister() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-  const [success, setSuccess] = useState(false)
+  const [message, setMessage] = useState('')
 
   const registerUser = async (
     url: string,
@@ -13,27 +11,34 @@ export default function useRegister() {
     password: string,
     name: string,
     rut: string
-  ) => {
+  ): Promise<string> => {
     setLoading(true)
-    setError(null)
-    setSuccess(false)
+    setMessage('')
 
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-        user,
-        email,
-        password,
-        name,
-        rut
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user, email, password, name, rut })
       })
-      setSuccess(true)
-      return res.data
-    } catch (error) {
-      setError('Error al crear el usuario')
+
+      if (!response.ok) {
+        throw new Error('Error en la solicitud')
+      }
+
+      const successMessage = 'Usuario creado correctamente'
+      setMessage(successMessage)
+      return successMessage
+    } catch (err) {
+      const errorMessage = 'Error al crear el usuario'
+      setMessage(errorMessage)
+      return errorMessage
     } finally {
       setLoading(false)
     }
   }
 
-  return { registerUser, loading, error, success }
+  return { registerUser, loading, message }
 }
