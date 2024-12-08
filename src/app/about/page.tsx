@@ -1,4 +1,5 @@
 'use client'
+
 import { motion } from 'framer-motion'
 import FooterPage from '@/components/footer/footerPage'
 import { useState } from 'react'
@@ -10,9 +11,11 @@ import {
 } from '@/components/ui/accordion'
 import Link from 'next/link'
 import Navbar from '@/components/navbar/navbar'
+import Image from 'next/image'
 
 function About() {
   const [isAnimating, setIsAnimating] = useState(true)
+
   return (
     <div className="relative">
       <Navbar />
@@ -34,13 +37,15 @@ function About() {
       >
         <div className="w-full md:w-1/2 p-5">
           <h1 className="text-4xl font-bold mb-4">Lider de proyecto</h1>
-          <motion.img
-            src="/yo.jpeg"
-            alt="Vicente Roa"
-            width={700}
-            height={500}
-            className="rounded-xl"
-          />
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 300 }}>
+            <Image
+              src="/yo.jpeg"
+              alt="Vicente Roa"
+              width={700}
+              height={500}
+              className="rounded-xl shadow-lg"
+            />
+          </motion.div>
         </div>
         <section className="w-full md:w-1/3 p-5">
           <h1 className="text-4xl font-bold mb-4 text-yellow-700">Vicente Roa</h1>
@@ -53,30 +58,71 @@ function About() {
             y mejoran la eficiencia operativa.
           </p>
           <p>
-            Doctor Chat es un proyecto para mi titulación que me ha permitido implementar la
+            Doctor Chat fue el proyecto para mi titulación que me ha permitido implementar la
             inteligencia artificial en la medicina. Mi principal objetivo es crear una experiencia
             de usuario diferente y atractiva para los pacientes, que les permita interactuar de
             manera más intuitiva y fácil de usar a la hora de agendar una consulta.
           </p>
-          <div className="mt-4">
-            <Link href="https://www.linkedin.com/in/vicente-roa-81548b216/ " target="_blank">
-              {' '}
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-3.5 py-1 rounded dark:bg-blue-900 dark:text-blue-300">
+          <div className="mt-4 space-x-2">
+            <Link href="https://www.linkedin.com/in/vicente-roa-81548b216/" target="_blank">
+              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-3.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 transition-colors">
                 LinkedIn
               </span>
             </Link>
-            <Link href="https://github.com/vicenteroa " target="_blank">
-              {' '}
-              <span className="bg-gray-700 text-gray-100 text-xs font-medium me-2 px-3.5 py-1 rounded dark:bg-gray-700 dark:text-gray-300">
+            <Link href="https://github.com/vicenteroa" target="_blank">
+              <span className="bg-gray-700 text-gray-100 text-xs font-medium px-3.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-600 transition-colors">
                 Github
               </span>
             </Link>
           </div>
         </section>
       </motion.div>
-      <h1 className="text-4xl font-bold mb-8  mt-32 text-center">Preguntas frecuentes</h1>
-      <section>
-        <Accordion type="single" collapsible className="ml-5  ">
+
+      <section className="mt-32 px-5">
+        <h2 className="text-4xl font-bold mb-8 text-center">Arquitectura Utilizada</h2>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+          <div className="w-full md:w-1/2">
+            <Image
+              src="/clean_arq.png"
+              alt="Arquitectura Limpia"
+              width={600}
+              height={600}
+              className="rounded-xl shadow-lg"
+            />
+          </div>
+          <div className="w-full md:w-1/2">
+            <p className="text-lg">
+              La Arquitectura Limpia es un enfoque de diseño de software que separa las
+              preocupaciones de una aplicación en capas distintas. Esto permite una mayor
+              flexibilidad, mantenibilidad y testabilidad del código. En Doctor Chat, hemos
+              implementado esta arquitectura para asegurar un desarrollo sostenible y escalable de
+              nuestra aplicación.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-32 px-5">
+        <h2 className="text-4xl font-bold mb-8 text-center">Veredicto del jurado</h2>
+        <div className="flex justify-center">
+          <div className="w-[315px] h-[560px]">
+            <iframe
+              width="315"
+              height="560"
+              src="https://www.youtube.com/embed/58xmZ9zi72g"
+              title="Presentación del Proyecto Doctor Chat"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="rounded-xl shadow-lg"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <h1 className="text-4xl font-bold mb-8 mt-32 text-center">Preguntas frecuentes</h1>
+      <section className="px-5 mb-16">
+        <Accordion type="single" collapsible className="max-w-3xl mx-auto">
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-xl">
               ¿Porque seleccionaste la área de la salud ?
@@ -125,8 +171,8 @@ function About() {
               ¿ Cuanto tiempo de desarrollo tiene el proyecto?
             </AccordionTrigger>
             <AccordionContent className="text-[16px]">
-              El proyecto tiene una duración de 6 meses, y está en fase de desarrollo. Actualmente
-              me encuentro en el segundo mes de desarrollo
+              El proyecto tuvo una duración de 6 meses y fue completado con éxito el 05 de diciembre
+              del 2024. Obtuve una calificación de 7.0 y el proyecto está 100% terminado.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

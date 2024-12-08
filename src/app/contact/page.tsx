@@ -7,7 +7,7 @@ import Navbar from '@/components/navbar/navbar'
 export default function Component() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-    <Navbar />
+      <Navbar />
       <div className="container grid items-center justify-center gap-8 px-4 md:px-6">
         <div className="space-y-3 text-center">
           <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contactame</h2>
@@ -27,7 +27,7 @@ export default function Component() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject">Asunto</Label>
             <Input id="subject" placeholder="Indica el asunto" required />
           </div>
           <div className="space-y-2">

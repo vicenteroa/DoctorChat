@@ -11,10 +11,6 @@ export const items = [
   {
     name: 'Contactame',
     href: '/contact'
-  },
-  {
-    name: 'Novedades',
-    href: '/novedades'
   }
 ]
 
@@ -26,11 +22,11 @@ export default function Navbar() {
         <span className="text-lg font-semibold">DoctorChat</span>
       </Link>
       <nav className="hidden gap-6 md:flex">
-        <Link
-        href="/login"
-        prefetch={false}
-        >
-        <Button variant="ghost" className="text-lg font-medium"> Iniciar sesión</Button>
+        <Link href="/login" prefetch={false}>
+          <Button variant="ghost" className="text-lg font-medium">
+            {' '}
+            Iniciar sesión
+          </Button>
         </Link>
         {items.map((item) => (
           <Link
