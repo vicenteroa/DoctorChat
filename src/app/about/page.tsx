@@ -35,7 +35,7 @@ function About() {
         <div className="w-full md:w-1/2 p-5">
           <h1 className="text-4xl font-bold mb-4">Lider de proyecto</h1>
           <motion.img
-            src="/about-me.jpg"
+            src="/yo.jpeg"
             alt="Vicente Roa"
             width={700}
             height={500}
